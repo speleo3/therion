@@ -47,7 +47,7 @@ constexpr auto ANON_STATION_NAME = "-";
  * Helper function for converting a string vector to a vector of char pointers.
  */
 static std::vector<char *>
-_string_vec_to_charp_vec(std::vector<std::string> & svec) {
+string_vec_to_charp_vec(std::vector<std::string> & svec) {
   const size_t N = svec.size();
   auto vec = std::vector<char *>(N);
   for (size_t i = 0; i != N; ++i) {
@@ -738,7 +738,7 @@ bool thimport::import_shot(thsst const & s1s, //
     this->db->csurveyptr = sli->survey;
     auto * const tmpdata = sli->survey->data;
 
-    tmpdata->set_data_data(shead.size(), _string_vec_to_charp_vec(shead).data());
+    tmpdata->set_data_data(shead.size(), string_vec_to_charp_vec(shead).data());
 
     tmpdata->d_flags = TT_LEGFLAG_NONE;
     if ((sli->flags & img_FLAG_SURFACE) != 0) {
@@ -750,7 +750,7 @@ bool thimport::import_shot(thsst const & s1s, //
     if ((sli->flags & img_FLAG_SPLAY) != 0) {
       tmpdata->d_flags |= TT_LEGFLAG_SPLAY;
     }
-    tmpdata->insert_data_leg(sdata.size(), _string_vec_to_charp_vec(sdata).data());
+    tmpdata->insert_data_leg(sdata.size(), string_vec_to_charp_vec(sdata).data());
     this->db->csurveyptr = tmpsurvey;
   }
 
