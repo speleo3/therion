@@ -14,4 +14,4 @@ source
   endsurvey
 endsource
 
-export database -o database-out.csv
+export database -o database.csv
