@@ -96,15 +96,15 @@ jobs:
           echo Remotes=
           git remote -v
           echo Previous Version=
-          git describe --abbrev=0 --tags HEAD
+          git describe --abbrev=0 --tags HEAD || true
       - name: Get tags
-        run: git fetch https://github.com/therion/therion 'refs/tags/*:refs/tags/*'
+        run: git fetch https://github.com/therion/therion 'refs/tags/*:refs/tags/*' || true
       - name: After fetching tags
         run: |
           echo Remotes=
           git remote -v
           echo Previous Version=
-          git describe --abbrev=0 --tags HEAD
+          git describe --abbrev=0 --tags HEAD || true
       - name: Get tags full
         run: git fetch --tags https://github.com/therion/therion
       - name: After fetching tags full
@@ -112,4 +112,4 @@ jobs:
           echo Remotes=
           git remote -v
           echo Previous Version=
-          git describe --abbrev=0 --tags HEAD
+          git describe --abbrev=0 --tags HEAD || true
