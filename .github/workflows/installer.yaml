@@ -82,8 +82,6 @@ jobs:
       - name: prevent git EOL conversion
         run: git config --global core.autocrlf input
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: build and create the installation package
         id: build
         run: |
@@ -95,3 +93,23 @@ jobs:
           echo env.THDIR="${{ env.THDIR }}"
           echo runner.workspace="${{ runner.workspace }}"
           echo RUNNER_WORKSPACE="$RUNNER_WORKSPACE"
+          echo Remotes=
+          git remote -v
+          echo Previous Version=
+          git describe --abbrev=0 --tags HEAD
+      - name: Get tags
+        run: git fetch https://github.com/therion/therion 'refs/tags/*:refs/tags/*'
+      - name: After fetching tags
+        run: |
+          echo Remotes=
+          git remote -v
+          echo Previous Version=
+          git describe --abbrev=0 --tags HEAD
+      - name: Get tags full
+        run: git fetch --tags https://github.com/therion/therion
+      - name: After fetching tags full
+        run: |
+          echo Remotes=
+          git remote -v
+          echo Previous Version=
+          git describe --abbrev=0 --tags HEAD
