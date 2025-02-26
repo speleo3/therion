@@ -111,6 +111,7 @@ enum {
   TTIC_OPT_MPOST,
   TTIC_PATH_PDFTEX,
   TTIC_PATH_SOURCE,
+  TTIC_COMMAND_SVG2TH2,
   TTIC_TMP_PATH,
   TTIC_TMP_REMOVE_SCRIPT,
   TTIC_LANG,
@@ -153,6 +154,7 @@ static const thstok thtt_initcmd[] = {
   {"pdftex-path", TTIC_PATH_PDFTEX},
   {"proj-missing-grid", TTIC_PROJ_MISSING_GRID},
   {"source-path", TTIC_PATH_SOURCE},
+  {"svg2th2-command", TTIC_COMMAND_SVG2TH2},
   {"tex-env",TTIC_TEX_ENV},
   {"tex-fonts",TTIC_TEX_FONTS},
   {"tex-fonts-optional",TTIC_TEX_FONTS_OPTIONAL},
@@ -428,6 +430,7 @@ void thinit::load()
         case TTIC_OPT_MPOST:
         case TTIC_PATH_PDFTEX:
         case TTIC_PATH_SOURCE:
+        case TTIC_COMMAND_SVG2TH2:
         case TTIC_OTF2PFB:
         case TTIC_TEX_REFS_REGISTERS:
         case TTIC_TEX_ENV:
@@ -559,6 +562,10 @@ void thinit::load()
           thcfg.set_search_path(args[1]);
           break;
         
+        case TTIC_COMMAND_SVG2TH2:
+          thcfg.command_svg2th2 = args[1];
+          break;
+
         case TTIC_TEX_FONTS_OPTIONAL:
         case TTIC_TEX_FONTS:
           frec.id = get_enc_id(args[1]);

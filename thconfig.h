@@ -30,6 +30,7 @@
 #define thconfig_h
 
 #include <list>
+#include <string>
 
 #include "thbuffer.h"
 #include "thmbuffer.h"
@@ -75,6 +76,7 @@ class thconfig {
     install_path,  ///< Installation path.
     bf1,  ///< TMP buffer.
     bf2;  ///< TMP buffer.
+  std::string command_svg2th2; ///< SVG to TH2 converter command
   thmbuffer strmbuff,  ///< String storage buffer.
     src_fnames,  ///< Source file name.
     cfg_dblines,  ///< Lines with database commands.

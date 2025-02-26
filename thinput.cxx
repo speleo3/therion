@@ -30,6 +30,7 @@
 #include "therion.h"
 #include "thexception.h"
 #include "thversion.h"
+#include "thconfig.h"
 
 #include <algorithm>
 #include <array>
@@ -73,6 +74,41 @@ static auto parse_version(const char * const version, bool strict = false) {
     throw thexception(fmt::format("Failed to parse version '{}'", version));
   }
   return parts;
+}
+
+/**
+ * Like std::string_view::ends_with (C++20)
+ */
+static bool string_ends_with(const char * s, const char * suffix) {
+  size_t const slen = strlen(s);
+  size_t const suffix_len = strlen(suffix);
+  if (slen < suffix_len) {
+    return false;
+  }
+  return strncmp(s + slen - suffix_len, suffix, suffix_len) == 0;
+}
+
+/**
+ * Convert SVG to a Therion TH2 file.
+ */
+static void convert_svg_to_th2(thinput::ifile * ifptr) {
+  if (!ifptr->sh.is_open()) {
+    return;
+  }
+  ifptr->close();
+
+  thprintf("converting to th2: %s ... ", ifptr->name.get_buffer());
+
+  if (thcfg.command_svg2th2.empty()) {
+    throw thexception("svg2th2-command not set");
+  }
+
+  auto command =
+      fmt::format("{} \"{}\" > \"{}.th2\"", thcfg.command_svg2th2.c_str(),
+                  ifptr->name.get_buffer(), ifptr->name.get_buffer());
+  std::system(command.c_str());
+  ifptr->name += ".th2";
+  ifptr->sh.open(ifptr->name);
 }
 
 thinput::ifile::ifile(ifile * fp)
@@ -271,6 +307,9 @@ void thinput::open_file(char * fname)
           
   }
   
+  if (string_ends_with(ifptr->name, ".svg")) {
+    convert_svg_to_th2(ifptr);
+  }
   
   // if file was open, now let's try if not recursive inclusion
   ifile * tmptr;
