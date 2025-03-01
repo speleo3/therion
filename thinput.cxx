@@ -106,7 +106,11 @@ static void convert_svg_to_th2(thinput::ifile * ifptr) {
   auto command =
       fmt::format("{} \"{}\" > \"{}.th2\"", thcfg.command_svg2th2.c_str(),
                   ifptr->name.get_buffer(), ifptr->name.get_buffer());
-  std::system(command.c_str());
+  auto retcode = std::system(command.c_str());
+  if (retcode != EXIT_SUCCESS) {
+    throw thexception(fmt::format("svg2th2-command exit code -- {}", retcode));
+  }
+
   ifptr->name += ".th2";
   ifptr->sh.open(ifptr->name);
 }
