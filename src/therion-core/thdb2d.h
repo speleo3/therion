@@ -29,6 +29,7 @@
 #ifndef thdb2d_h
 #define thdb2d_h
 
+#include "borrowing_list.h"
 #include "thinfnan.h"
 #include "thdb2dprj.h"
 #include "thmbuffer.h"
@@ -166,7 +167,7 @@ class thdb2d {
   void pp_calc_distortion(thdb2dprj * prj);  ///< ???
 
   void insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level, thdb2dmi_shift shift = thdb2dmi_shift(),
-                         std::vector<const thmap *> trace = {});
+    therion::borrowing_list<thmap const *> const & trace = {});
   thdb2dxm * insert_maps(thdb2dxm * selection,thdb2dxm * insert_after,thmap * map,
     unsigned long selection_level, int level, int title_level, int map_level); ///< ???
   void reset_selection();

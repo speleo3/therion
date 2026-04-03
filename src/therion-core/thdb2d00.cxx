@@ -45,18 +45,18 @@
  * @param mode Type of sub-map item (normal/above/below)
  * @param level Nesting depth
  * @param shift Cumulated sub-map offset
- * @param trace For detecting circular map references
+ * @param tracetail For detecting circular map references
  */
 void thdb2d::insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level, thdb2dmi_shift shift,
-                               std::vector<const thmap *> trace)
+    therion::borrowing_list<thmap const *> const & tracetail)
 {
-  if (std::find(trace.begin(), trace.end(), map) != trace.end()) {
+  if (tracetail.contains(map)) {
     thwarning(fmt::format("{} -- Breaking circular reference for map {}",
                           map->throw_source(), map->get_name()));
     return;
   }
 
-  trace.push_back(map);
+  auto const trace = tracetail.prepended(map);
 
   thdb2dxs * xs, * txs = NULL;
   bool found = false;
