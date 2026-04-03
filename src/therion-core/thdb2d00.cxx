@@ -27,6 +27,7 @@
  
 #include "thdb2d.h"
 #include "thdatabase.h"
+#include "therion.h"
 #include "thmap.h"
 #include "thscrap.h"
 #include "thsurvey.h"
@@ -38,7 +39,25 @@
 #include <cstring>
 #include "thmapstat.h"
 
-void thdb2d::insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level, thdb2dmi_shift shift) {
+/**
+ * @param fmap Export map to insert into
+ * @param map Sub-map to insert
+ * @param mode Type of sub-map item (normal/above/below)
+ * @param level Nesting depth
+ * @param shift Cumulated sub-map offset
+ * @param trace For detecting circular map references
+ */
+void thdb2d::insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level, thdb2dmi_shift shift,
+                               std::vector<const thmap *> trace)
+{
+  if (std::find(trace.begin(), trace.end(), map) != trace.end()) {
+    thwarning(fmt::format("{} -- Breaking circular reference for map {}",
+                          map->throw_source(), map->get_name()));
+    return;
+  }
+
+  trace.push_back(map);
+
   thdb2dxs * xs, * txs = NULL;
   bool found = false;
   if (map->has_direct_scrap_children()) {
@@ -113,7 +132,7 @@ void thdb2d::insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level
       int preview_type = TT_MAPITEM_NONE;
 
       if (mode == TT_MAPITEM_NORMAL) {
-        this->insert_basic_maps(fmap, childmap, mi->type, level + 1, shift.add(mi->m_shift));
+        this->insert_basic_maps(fmap, childmap, mi->type, level + 1, shift.add(mi->m_shift), trace);
         preview_type = mi->m_shift.m_preview;
       } else if (thcfg.preview_deep ||
                  (mi->type == TT_MAPITEM_NORMAL && !mi->m_shift.is_active())) {
@@ -122,7 +141,7 @@ void thdb2d::insert_basic_maps(thdb2dxm * fmap, thmap * map, int mode, int level
 
       if (preview_type == TT_MAPITEM_ABOVE ||
           preview_type == TT_MAPITEM_BELOW) {
-        this->insert_basic_maps(fmap, childmap, preview_type, level + 1, shift);
+        this->insert_basic_maps(fmap, childmap, preview_type, level + 1, shift, trace);
       }
     }
   }
